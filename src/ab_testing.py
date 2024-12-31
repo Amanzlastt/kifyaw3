@@ -41,11 +41,19 @@ class ABanalysis:
             "p-Value": result.pvalue,
             "Reject Null": result.pvalue < 0.05
         }
-    def visualize_province(self):
-        plt.figure(figsize=(10, 6))
-        sns.boxplot(data=self.data, x='Province', y='TotalPremium')
-        plt.title('Distribution of Total Premium Across Provinces')
-        plt.xlabel('Province')
-        plt.ylabel('Total Premium')
-        plt.xticks(rotation=45)
-        return plt
+    
+    def test_risk_between_PostalCode(self):
+        """
+        Test if there are significant risk differences (Total Claims) between PostalCode.
+        Null Hypothesis: There are no risk differences between PostalCode.
+        """
+        zipcode_groups = [self.data[self.data['PostalCode'] == z]['TotalClaims'] for z in self.data['PostalCode'].unique()]
+        result = f_oneway(*zipcode_groups)
+        return {
+            "Test": "ANOVA",
+            "Null Hypothesis": "No risk differences between zip codes",
+            "F-Statistic": result.statistic,
+            "p-Value": result.pvalue,
+            "Reject Null": result.pvalue < 0.05
+        }
+    
